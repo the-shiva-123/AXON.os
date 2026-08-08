@@ -1,0 +1,6 @@
+{
+  "name": "AXON.OS — Autonomous Agent Generator",
+  "description": "Generate autonomous AI agent collectives based on mission requirements with prompt engineering, live terminal execution, and multi-framework code export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

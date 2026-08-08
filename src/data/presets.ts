@@ -1,0 +1,44 @@
+import { MissionPreset } from '../types/agent';
+
+export const MISSION_PRESETS: MissionPreset[] = [
+  {
+    id: 'startup-launch',
+    title: 'Autonomous SaaS Launch Team',
+    tagline: 'Full-stack engineering, product strategy, and growth engine',
+    badge: 'Product & Tech',
+    prompt: 'Build a 4-agent autonomous startup workforce to launch an AI document analysis SaaS: 1 Lead Product Architect, 1 Full-Stack Backend Engineer, 1 Growth Marketing Specialist, and 1 QA/Security Compliance Auditor.',
+    agentCount: 4,
+  },
+  {
+    id: 'research-synth',
+    title: 'Deep Market & Intelligence Squad',
+    tagline: 'Web scraping, trend modeling, competitor analysis, and synthesis',
+    badge: 'Research & Intelligence',
+    prompt: 'Design an intelligence collective that continuously audits competitive landscape in renewable energy tech, extracts SEC filings, identifies pricing moves, and drafts weekly executive briefing memos.',
+    agentCount: 4,
+  },
+  {
+    id: 'sec-incident',
+    title: 'Cybersecurity Incident Response Unit',
+    tagline: 'Real-time threat detection, log analysis, firewall patching, and post-mortem',
+    badge: 'SecOps',
+    prompt: 'Create a 5-agent security workforce: Lead Incident Commander, Log Analyzer (SIEM Parser), Threat Hunter (Vulnerability Assessor), Network Firewall Operator, and Regulatory Compliance Officer.',
+    agentCount: 5,
+  },
+  {
+    id: 'creative-brand',
+    title: 'Generative Brand & Content Engine',
+    tagline: 'SEO strategy, copywriter, visual asset curator, and social distributor',
+    badge: 'Marketing',
+    prompt: 'Generate an autonomous creative marketing studio that converts technical product release notes into developer blogs, Twitter threads, newsletter digests, and visual infographics.',
+    agentCount: 4,
+  },
+  {
+    id: 'fintech-portfolio',
+    title: 'Algorithmic Financial Risk & Trading Squad',
+    tagline: 'Macroeconomic analysis, risk modeling, sentiment audit, and portfolio balancing',
+    badge: 'Fintech',
+    prompt: 'Build an autonomous financial analyst collective to monitor crypto and stock market volatility, assess news sentiment, run Monte Carlo risk simulations, and issue rebalancing signals.',
+    agentCount: 4,
+  },
+];
