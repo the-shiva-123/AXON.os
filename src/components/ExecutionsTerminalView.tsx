@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { AgentCollective, AIAgent, CollectiveSimulationStep } from '../types/agent';
+import { FormattedMarkdown } from './FormattedMarkdown';
 
 interface ExecutionsTerminalViewProps {
   collective: AgentCollective | null;
@@ -410,13 +411,13 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
                   </div>
 
                   <div
-                    className={`p-4 text-xs leading-relaxed font-mono ${
+                    className={`p-4 text-xs leading-relaxed w-full ${
                       msg.role === 'user'
-                        ? 'bg-black text-white'
+                        ? 'bg-black text-white font-mono'
                         : 'bg-white border border-gray-200 text-gray-900 shadow-sm'
                     }`}
                   >
-                    {msg.content}
+                    <FormattedMarkdown content={msg.content} isUser={msg.role === 'user'} />
                   </div>
                 </div>
               ))}
