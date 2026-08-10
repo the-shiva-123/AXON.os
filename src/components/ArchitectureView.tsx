@@ -50,21 +50,21 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
   if (!collective || !collective.agents || collective.agents.length === 0) {
     return (
-      <div className="w-full max-w-4xl mx-auto my-12 p-12 bg-white border border-gray-200 text-center flex flex-col items-center gap-6">
-        <div className="w-16 h-16 border-2 border-black flex items-center justify-center font-mono text-2xl font-bold">
+      <div className="w-full max-w-4xl mx-auto my-12 p-12 bg-[#131418] border border-[#23252d] rounded-2xl text-center flex flex-col items-center gap-6 shadow-xl">
+        <div className="w-16 h-16 rounded-xl border border-blue-500/30 bg-blue-500/10 flex items-center justify-center font-mono text-2xl font-bold text-blue-400">
           00
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold uppercase tracking-wider text-black">
+          <h2 className="text-2xl font-bold tracking-tight text-white">
             No Architecture Defined
           </h2>
-          <p className="text-sm text-gray-500 font-light max-w-md">
-            Generate an AI agent workforce in the Drafts tab or create custom agents manually to inspect system instructions and tool bindings.
+          <p className="text-sm text-gray-400 font-light max-w-md">
+            Generate an AI agent workforce in the Prompt Synthesizer tab or create custom agents manually to inspect system instructions and tool bindings.
           </p>
         </div>
         <button
           onClick={onAddAgent}
-          className="px-8 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-lg transition-all shadow-md shadow-blue-500/20 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           <span>Manual Override — Create Agent</span>
@@ -86,25 +86,25 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-8 py-6 px-4 md:px-0">
       {/* Collective Header Banner */}
-      <section className="bg-white border border-gray-200 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <section className="bg-[#131418] border border-[#23252d] p-6 md:p-8 rounded-2xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex flex-col gap-2 max-w-3xl">
-          <div className="flex items-center gap-3">
-            <span className="px-2.5 py-1 bg-black text-white text-[9px] uppercase font-bold tracking-widest font-mono">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md text-[10px] font-mono font-semibold tracking-wider uppercase">
               {collective.agents.length} AGENTS ACTIVE
             </span>
-            <span className="px-2.5 py-1 bg-gray-100 text-gray-700 text-[9px] uppercase font-bold tracking-widest font-mono">
+            <span className="px-2.5 py-1 bg-[#1b1d24] text-gray-300 border border-[#2a2c38] rounded-md text-[10px] font-mono font-medium tracking-wider uppercase">
               {collective.orchestrationPattern}
             </span>
-            <span className="text-[10px] uppercase font-mono text-gray-400">
-              Domain: {collective.domainFocus}
+            <span className="text-[11px] font-mono text-gray-400">
+              Domain: <span className="text-gray-200">{collective.domainFocus}</span>
             </span>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 uppercase">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
             {collective.title}
           </h1>
 
-          <p className="text-xs text-gray-600 leading-relaxed font-light">
+          <p className="text-xs text-gray-400 leading-relaxed font-light">
             {collective.missionOverview}
           </p>
         </div>
@@ -112,9 +112,9 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
         <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
           <button
             onClick={onRunCollective}
-            className="w-full sm:w-auto px-6 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-lg transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
           >
-            <Terminal className="w-4 h-4 text-emerald-400" />
+            <Terminal className="w-4 h-4 text-blue-200" />
             <span>Run Collective Simulation</span>
           </button>
         </div>
@@ -122,14 +122,14 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
       {/* Filter Tabs */}
       {allTags.length > 0 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-200 text-[10px] uppercase font-bold tracking-widest text-gray-500">
-          <span className="text-gray-400 mr-2 font-mono">Filter Tag:</span>
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#23252d] text-[11px] font-mono text-gray-400">
+          <span className="text-gray-500 mr-1 font-mono">Filter Tag:</span>
           <button
             onClick={() => setFilterTag('ALL')}
-            className={`px-3 py-1 border transition-all ${
+            className={`px-3 py-1 rounded-lg border transition-all ${
               filterTag === 'ALL'
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                ? 'bg-blue-600 text-white border-blue-500 shadow-sm shadow-blue-500/20 font-semibold'
+                : 'bg-[#131418] text-gray-300 border-[#23252d] hover:border-gray-500'
             }`}
           >
             All ({collective.agents.length})
@@ -138,10 +138,10 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
             <button
               key={tag}
               onClick={() => setFilterTag(tag)}
-              className={`px-3 py-1 border transition-all ${
+              className={`px-3 py-1 rounded-lg border transition-all ${
                 filterTag === tag
-                  ? 'bg-black text-white border-black'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                  ? 'bg-blue-600 text-white border-blue-500 shadow-sm shadow-blue-500/20 font-semibold'
+                  : 'bg-[#131418] text-gray-300 border-[#23252d] hover:border-gray-500'
               }`}
             >
               {tag}
@@ -158,29 +158,29 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
           return (
             <div
               key={agent.id}
-              className="bg-white border border-gray-200 p-6 flex flex-col justify-between hover:border-black transition-all group relative"
+              className="bg-[#131418] border border-[#23252d] p-5 rounded-xl flex flex-col justify-between hover:border-blue-500/40 transition-all group relative shadow-sm hover:shadow-lg hover:shadow-blue-500/5"
             >
               <div>
                 {/* Top Number & Hierarchy Badge */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 border-2 border-black flex items-center justify-center bg-white group-hover:bg-black group-hover:text-white transition-colors">
-                    <span className="font-mono font-bold text-sm">{agent.number}</span>
+                  <div className="w-9 h-9 rounded-lg border border-blue-500/30 bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all">
+                    <span className="font-mono font-bold text-xs">{agent.number}</span>
                   </div>
 
-                  <span className="text-[9px] uppercase font-mono font-bold text-gray-400">
+                  <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-[#1b1d24] text-gray-400 border border-[#282a36]">
                     {agent.hierarchyLevel}
                   </span>
                 </div>
 
                 {/* Name & Role */}
-                <h3 className="font-bold text-sm uppercase tracking-wider mb-1 text-gray-900 group-hover:text-black">
+                <h3 className="font-bold text-sm tracking-wide text-white group-hover:text-blue-300 transition-colors mb-1">
                   {agent.name}
                 </h3>
-                <span className="block text-[11px] font-mono text-gray-500 mb-3 font-semibold">
+                <span className="block text-[11px] font-mono text-blue-400 mb-3 font-medium">
                   {agent.role}
                 </span>
 
-                <p className="text-xs text-gray-500 leading-relaxed font-light mb-4 line-clamp-3">
+                <p className="text-xs text-gray-400 leading-relaxed font-light mb-4 line-clamp-3">
                   {agent.description}
                 </p>
 
@@ -189,7 +189,7 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
                   {(agent.categoryTags || []).map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 bg-gray-100 text-[9px] uppercase font-bold tracking-widest text-gray-700"
+                      className="px-2 py-0.5 bg-[#1a1c24] border border-[#282a3b] text-[9px] uppercase font-mono font-semibold tracking-wider text-gray-300 rounded"
                     >
                       {tag}
                     </span>
@@ -197,17 +197,17 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
                 </div>
 
                 {/* Tools Count & Memory */}
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400 uppercase font-mono mb-4">
-                  <span>Tools: {agent.tools?.length || 0}</span>
-                  <span>{agent.memoryType}</span>
+                <div className="pt-3 border-t border-[#1e2029] flex items-center justify-between text-[10px] text-gray-500 font-mono mb-4">
+                  <span>Tools: <strong className="text-gray-300">{agent.tools?.length || 0}</strong></span>
+                  <span className="text-gray-400">{agent.memoryType}</span>
                 </div>
               </div>
 
               {/* Action Buttons Bar */}
-              <div className="flex items-center gap-1.5 pt-3 border-t border-gray-200">
+              <div className="flex items-center gap-1.5 pt-3 border-t border-[#1e2029]">
                 <button
                   onClick={() => onSelectAgent(agent)}
-                  className="flex-1 py-2 bg-gray-50 hover:bg-black hover:text-white border border-gray-200 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1"
+                  className="flex-1 py-2 bg-[#1a1c24] hover:bg-blue-600 text-gray-300 hover:text-white border border-[#282a3b] hover:border-blue-500 rounded-lg text-[10px] font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-1"
                   title="Edit Agent Blueprint"
                 >
                   <Edit3 className="w-3 h-3" />
@@ -216,36 +216,36 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
                 <button
                   onClick={() => onTestAgentChat(agent)}
-                  className="px-2.5 py-2 bg-gray-50 hover:bg-black hover:text-white border border-gray-200 text-[10px] font-bold uppercase tracking-widest transition-all"
+                  className="px-3 py-2 bg-[#1a1c24] hover:bg-blue-600 text-gray-300 hover:text-white border border-[#282a3b] hover:border-blue-500 rounded-lg text-[10px] font-semibold transition-all"
                   title="Test Agent Chat"
                 >
-                  <MessageSquare className="w-3 h-3" />
+                  <MessageSquare className="w-3.5 h-3.5" />
                 </button>
 
                 <button
                   onClick={() => onDeleteAgent(agent.id)}
-                  className="px-2.5 py-2 bg-gray-50 hover:bg-red-600 hover:text-white border border-gray-200 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:border-red-600 transition-all"
+                  className="px-3 py-2 bg-[#1a1c24] hover:bg-red-600/20 text-gray-500 hover:text-red-400 border border-[#282a3b] hover:border-red-500/40 rounded-lg text-[10px] font-semibold transition-all"
                   title="Remove Agent"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
           );
         })}
 
-        {/* Manual Override Card - Geometric Balance standard element */}
+        {/* Manual Override Card */}
         <div
           onClick={onAddAgent}
-          className="bg-black border border-black p-6 flex flex-col justify-center items-center text-white text-center cursor-pointer hover:bg-gray-900 transition-all min-h-[280px]"
+          className="bg-[#131418] border border-dashed border-blue-500/30 p-6 rounded-xl flex flex-col justify-center items-center text-white text-center cursor-pointer hover:bg-[#181a20] hover:border-blue-500/60 transition-all min-h-[280px] group shadow-sm"
         >
-          <div className="w-12 h-12 rounded-full border border-white flex items-center justify-center mb-4 text-2xl font-light hover:scale-110 transition-transform">
-            +
+          <div className="w-12 h-12 rounded-full border border-blue-500/40 bg-blue-500/10 flex items-center justify-center mb-3 text-blue-400 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all">
+            <Plus className="w-6 h-6" />
           </div>
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-white">
+          <span className="text-xs font-semibold tracking-wider text-white">
             Manual Override
           </span>
-          <span className="text-[9px] opacity-60 mt-1 uppercase tracking-widest">
+          <span className="text-[10px] font-mono text-gray-500 mt-1 uppercase tracking-wider">
             Add Custom Agent
           </span>
         </div>
@@ -253,14 +253,14 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
       {/* Suggested First Task Banner */}
       {collective.suggestedFirstTask && (
-        <div className="bg-gray-50 border border-gray-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-[#131418] border border-[#23252d] p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
           <div className="flex items-start gap-3">
-            <Info className="w-5 h-5 text-black shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 font-mono">
                 Suggested Collective Task
               </span>
-              <p className="text-xs font-mono font-medium text-black">
+              <p className="text-xs font-mono font-medium text-gray-200">
                 "{collective.suggestedFirstTask}"
               </p>
             </div>
@@ -268,9 +268,9 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
 
           <button
             onClick={onRunCollective}
-            className="px-5 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors shrink-0"
+            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-lg transition-all shadow-md shadow-blue-500/20 shrink-0"
           >
-            Launch Task in Terminal →
+            Launch Task in Playground →
           </button>
         </div>
       )}

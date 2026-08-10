@@ -3,13 +3,14 @@ import { Navbar } from './components/Navbar';
 import { FooterBar } from './components/FooterBar';
 import { DraftsGeneratorView } from './components/DraftsGeneratorView';
 import { ArchitectureView } from './components/ArchitectureView';
+import { WorkflowCanvasView } from './components/WorkflowCanvasView';
 import { ExecutionsTerminalView } from './components/ExecutionsTerminalView';
 import { DeploymentsExportView } from './components/DeploymentsExportView';
 import { AgentDetailModal } from './components/AgentDetailModal';
 import { AgentCollective, AIAgent, CollectiveGenerationRequest } from './types/agent';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'drafts' | 'architecture' | 'executions' | 'deployments'>('drafts');
+  const [activeTab, setActiveTab] = useState<'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments'>('drafts');
   const [collective, setCollective] = useState<AgentCollective | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
@@ -146,7 +147,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#FAFAFA] text-[#1A1A1A] overflow-hidden select-none font-sans">
+    <div className="h-screen w-full flex flex-col bg-[#0b0c0e] text-[#e3e3e8] overflow-hidden select-none font-sans">
       {/* Top Geometric Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -173,6 +174,14 @@ export default function App() {
             onDeleteAgent={handleDeleteAgent}
             onTestAgentChat={handleTestAgentChat}
             onRunCollective={handleRunCollectiveSimulation}
+          />
+        )}
+
+        {activeTab === 'canvas' && (
+          <WorkflowCanvasView
+            collective={collective}
+            onUpdateCollective={(updated) => setCollective(updated)}
+            onRunSimulation={() => setActiveTab('executions')}
           />
         )}
 

@@ -141,11 +141,11 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
 
   if (!collective || collective.agents.length === 0) {
     return (
-      <div className="w-full max-w-4xl mx-auto my-12 p-12 bg-white border border-gray-200 text-center flex flex-col items-center gap-4">
-        <Terminal className="w-12 h-12 text-black" />
-        <h2 className="text-xl font-bold uppercase tracking-wider">Terminal Offline</h2>
-        <p className="text-xs text-gray-500 font-light max-w-md">
-          Synthesize an agent architecture first in the Drafts tab before starting multi-agent executions.
+      <div className="w-full max-w-4xl mx-auto my-12 p-12 bg-[#131418] border border-[#23252d] rounded-2xl text-center flex flex-col items-center gap-4 shadow-xl">
+        <Terminal className="w-12 h-12 text-blue-400" />
+        <h2 className="text-xl font-bold tracking-tight text-white">Terminal Offline</h2>
+        <p className="text-xs text-gray-400 font-light max-w-md">
+          Synthesize an agent architecture first in the Prompt Synthesizer tab before starting multi-agent executions.
         </p>
       </div>
     );
@@ -154,14 +154,14 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-6 py-6 px-4 md:px-0">
       {/* Sub-navigation bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-gray-200 p-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#131418] border border-[#23252d] p-3 md:p-4 rounded-xl shadow-lg">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveSubTab('simulation')}
-            className={`px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-semibold tracking-wide rounded-lg transition-all flex items-center gap-2 ${
               activeSubTab === 'simulation'
-                ? 'bg-black text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : 'bg-[#1b1d24] text-gray-300 hover:bg-[#232530] border border-[#282a38]'
             }`}
           >
             <Terminal className="w-3.5 h-3.5" />
@@ -170,10 +170,10 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
 
           <button
             onClick={() => setActiveSubTab('directChat')}
-            className={`px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-semibold tracking-wide rounded-lg transition-all flex items-center gap-2 ${
               activeSubTab === 'directChat'
-                ? 'bg-black text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : 'bg-[#1b1d24] text-gray-300 hover:bg-[#232530] border border-[#282a38]'
             }`}
           >
             <Bot className="w-3.5 h-3.5" />
@@ -181,8 +181,8 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
           </button>
         </div>
 
-        <div className="text-[10px] font-mono text-gray-400 uppercase">
-          Collective: <span className="font-bold text-black">{collective.title}</span>
+        <div className="text-[11px] font-mono text-gray-400">
+          Collective: <span className="font-semibold text-blue-300">{collective.title}</span>
         </div>
       </div>
 
@@ -190,10 +190,10 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
       {activeSubTab === 'simulation' && (
         <div className="flex flex-col gap-6">
           {/* Simulation Launcher */}
-          <div className="bg-white border border-gray-200 p-6 flex flex-col gap-4">
+          <div className="bg-[#131418] border border-[#23252d] p-6 rounded-2xl shadow-xl flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-widest text-black flex items-center gap-2">
-                <Play className="w-3.5 h-3.5 text-black" />
+              <label className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
+                <Play className="w-3.5 h-3.5 text-blue-400" />
                 Target Task Goal for Collective
               </label>
               <span className="text-[10px] font-mono text-gray-400 uppercase">
@@ -208,13 +208,13 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
                 onChange={(e) => setTaskGoal(e.target.value)}
                 disabled={isSimulating}
                 placeholder="Enter objective for the agent workforce..."
-                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 text-xs font-mono text-gray-900 focus:border-black focus:outline-none"
+                className="flex-1 px-4 py-3 bg-[#181a20] border border-[#282a36] text-xs font-mono text-gray-200 focus:border-blue-500 focus:outline-none rounded-lg transition-colors placeholder:text-gray-600"
               />
 
               <button
                 onClick={handleRunSimulation}
                 disabled={isSimulating || !taskGoal.trim()}
-                className="px-8 py-3 bg-black text-white text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-800 transition-all disabled:opacity-60"
+                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-500/20 disabled:opacity-50"
               >
                 {isSimulating ? (
                   <>
@@ -223,7 +223,7 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
                   </>
                 ) : (
                   <>
-                    <Terminal className="w-4 h-4 text-emerald-400" />
+                    <Terminal className="w-4 h-4 text-blue-200" />
                     <span>Run Simulation</span>
                   </>
                 )}
@@ -232,14 +232,14 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
           </div>
 
           {/* Terminal Console Output */}
-          <div className="bg-[#111111] text-gray-100 border border-black p-6 font-mono text-xs flex flex-col gap-6 shadow-xl min-h-[420px]">
+          <div className="bg-[#0b0c0f] text-gray-100 border border-[#23252d] p-6 font-mono text-xs flex flex-col gap-6 shadow-2xl rounded-2xl min-h-[420px]">
             {/* Terminal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-800">
+            <div className="flex items-center justify-between pb-4 border-b border-[#1e2029]">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="ml-2 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                <span className="ml-2 text-[10px] text-gray-400 uppercase tracking-widest font-bold">
                   AXON.OS Executions Terminal — US-EAST-GEN-04
                 </span>
               </div>
@@ -257,9 +257,9 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
 
             {/* Empty State */}
             {simulationSteps.length === 0 && !isSimulating && (
-              <div className="flex flex-col items-center justify-center my-16 text-center text-gray-600 gap-3">
-                <Terminal className="w-10 h-10 opacity-30" />
-                <p className="text-xs uppercase tracking-widest">
+              <div className="flex flex-col items-center justify-center my-16 text-center text-gray-500 gap-3">
+                <Terminal className="w-10 h-10 opacity-30 text-blue-400" />
+                <p className="text-xs uppercase tracking-widest font-mono">
                   Ready to execute. Enter a goal above and click "Run Simulation".
                 </p>
               </div>
@@ -270,31 +270,31 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
               {simulationSteps.map((step, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col gap-3 p-4 bg-[#181818] border-l-2 border-white/80 animate-fadeIn"
+                  className="flex flex-col gap-3 p-4 bg-[#13141b] border-l-2 border-l-blue-500 border border-[#232635] rounded-xl shadow-lg animate-fadeIn"
                 >
                   {/* Step Metadata Header */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-gray-400 border-b border-gray-800 pb-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-gray-400 border-b border-[#232635] pb-2">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 bg-white text-black font-bold">
+                      <span className="px-2 py-0.5 bg-blue-600 text-white font-bold rounded text-[9px]">
                         STEP {String(step.stepNumber).padStart(2, '0')}
                       </span>
-                      <span className="font-bold text-white uppercase tracking-wider">
+                      <span className="font-bold text-blue-300 uppercase tracking-wider">
                         {step.agentName}
                       </span>
-                      <span className="text-gray-500 font-normal">({step.agentRole})</span>
+                      <span className="text-gray-400 font-normal">({step.agentRole})</span>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="px-2 py-0.5 bg-gray-800 text-gray-300 uppercase tracking-wider">
+                      <span className="px-2 py-0.5 bg-[#1f2230] text-gray-300 rounded border border-[#2c3045] uppercase tracking-wider">
                         {step.actionType}
                       </span>
-                      <span className="text-gray-600 font-mono">{step.timestamp}</span>
+                      <span className="text-gray-500 font-mono">{step.timestamp}</span>
                     </div>
                   </div>
 
                   {/* Thought Process / CoT */}
-                  <div className="text-[11px] text-amber-300/90 italic font-mono bg-black/40 p-2.5 border border-gray-800/60">
-                    <span className="text-amber-500 font-bold not-italic mr-1">
+                  <div className="text-[11px] text-amber-300/90 italic font-mono bg-[#0c0d12] p-3 rounded-lg border border-amber-500/20">
+                    <span className="text-amber-400 font-bold not-italic mr-1">
                       [Chain-of-Thought]:
                     </span>
                     {step.thoughtProcess}
@@ -302,13 +302,13 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
 
                   {/* Step Output */}
                   <div className="relative group">
-                    <pre className="text-xs text-gray-200 whitespace-pre-wrap font-mono leading-relaxed bg-black p-3.5 border border-gray-800 overflow-x-auto">
+                    <pre className="text-xs text-gray-200 whitespace-pre-wrap font-mono leading-relaxed bg-[#0c0d12] p-4 rounded-lg border border-[#232635] overflow-x-auto">
                       {step.output}
                     </pre>
 
                     <button
                       onClick={() => copyToClipboard(step.output, idx)}
-                      className="absolute top-2 right-2 px-2 py-1 bg-gray-800 text-gray-300 text-[9px] uppercase font-bold tracking-wider hover:bg-white hover:text-black transition-colors opacity-0 group-hover:opacity-100 flex items-center gap-1"
+                      className="absolute top-2 right-2 px-2.5 py-1 bg-[#1d202d] text-gray-300 text-[9px] uppercase font-bold tracking-wider hover:bg-blue-600 hover:text-white rounded transition-colors opacity-0 group-hover:opacity-100 flex items-center gap-1"
                     >
                       {copiedStepIndex === idx ? (
                         <>
@@ -327,8 +327,8 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
               ))}
 
               {isSimulating && (
-                <div className="flex items-center gap-3 p-4 bg-[#181818] text-gray-400 text-xs font-mono animate-pulse">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+                <div className="flex items-center gap-3 p-4 bg-[#13141b] text-gray-400 text-xs font-mono rounded-xl border border-[#232635] animate-pulse">
+                  <span className="w-2 h-2 bg-blue-400 rounded-full animate-ping" />
                   <span>Agents interacting... Processing workflow pipeline...</span>
                 </div>
               )}
@@ -341,8 +341,8 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
       {activeSubTab === 'directChat' && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Agent Selector Sidebar */}
-          <div className="bg-white border border-gray-200 p-4 flex flex-col gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+          <div className="bg-[#131418] border border-[#23252d] p-4 rounded-xl flex flex-col gap-3 shadow-lg">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 font-mono">
               Select Agent
             </span>
 
@@ -351,53 +351,53 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
                 <button
                   key={ag.id}
                   onClick={() => setSelectedAgentId(ag.id)}
-                  className={`p-3 text-left border transition-all flex flex-col gap-1 ${
+                  className={`p-3 text-left rounded-lg border transition-all flex flex-col gap-1 ${
                     selectedAgentId === ag.id
-                      ? 'bg-black text-white border-black'
-                      : 'bg-white text-gray-800 border-gray-200 hover:border-black'
+                      ? 'bg-blue-600/20 text-white border-blue-500 shadow-md shadow-blue-500/10'
+                      : 'bg-[#181a20] text-gray-300 border-[#282a36] hover:border-gray-500'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] opacity-70">{ag.number}</span>
-                    <span className="text-[9px] uppercase tracking-wider font-mono opacity-80">
+                    <span className="font-mono text-[10px] text-blue-400 font-semibold">{ag.number}</span>
+                    <span className="text-[9px] uppercase tracking-wider font-mono text-gray-400">
                       {ag.hierarchyLevel}
                     </span>
                   </div>
 
-                  <span className="font-bold text-xs uppercase tracking-wider">{ag.name}</span>
-                  <span className="text-[10px] opacity-75 line-clamp-1">{ag.role}</span>
+                  <span className="font-bold text-xs tracking-wide">{ag.name}</span>
+                  <span className="text-[10px] text-gray-400 line-clamp-1">{ag.role}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Direct Playground Chat Area */}
-          <div className="lg:col-span-3 bg-white border border-gray-200 flex flex-col h-[560px]">
+          <div className="lg:col-span-3 bg-[#131418] border border-[#23252d] rounded-xl flex flex-col h-[580px] shadow-lg overflow-hidden">
             {/* Agent Header */}
             {selectedAgent && (
-              <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+              <div className="p-4 border-b border-[#23252d] bg-[#181a20] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 border-2 border-black flex items-center justify-center font-mono font-bold text-xs bg-white">
+                  <div className="w-8 h-8 rounded-lg border border-blue-500/30 bg-blue-500/10 flex items-center justify-center font-mono font-bold text-xs text-blue-400">
                     {selectedAgent.number}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-sm uppercase text-black">
+                    <span className="font-bold text-sm text-white">
                       {selectedAgent.name}
                     </span>
-                    <span className="text-[10px] font-mono text-gray-500">
+                    <span className="text-[10px] font-mono text-gray-400">
                       {selectedAgent.role} | Model: {selectedAgent.model} | Temp: {selectedAgent.temperature}
                     </span>
                   </div>
                 </div>
 
-                <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[9px] uppercase font-bold tracking-widest font-mono">
+                <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] uppercase font-bold tracking-widest font-mono rounded">
                   Online
                 </span>
               </div>
             )}
 
             {/* Chat Messages */}
-            <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-[#FAFAFA]">
+            <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-[#0e0f12]">
               {chatMessages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -411,10 +411,10 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
                   </div>
 
                   <div
-                    className={`p-4 text-xs leading-relaxed w-full ${
+                    className={`p-4 text-xs leading-relaxed w-full rounded-xl ${
                       msg.role === 'user'
-                        ? 'bg-black text-white font-mono'
-                        : 'bg-white border border-gray-200 text-gray-900 shadow-sm'
+                        ? 'bg-blue-600 text-white font-mono shadow-md shadow-blue-500/10'
+                        : 'bg-[#181a22] border border-[#252836] text-gray-200 shadow-sm'
                     }`}
                   >
                     <FormattedMarkdown content={msg.content} isUser={msg.role === 'user'} />
@@ -423,28 +423,28 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
               ))}
 
               {isSendingChat && (
-                <div className="mr-auto p-3 bg-white border border-gray-200 text-xs font-mono text-gray-400 animate-pulse flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-black animate-spin" />
+                <div className="mr-auto p-3 bg-[#181a22] border border-[#252836] text-xs font-mono text-gray-400 rounded-xl animate-pulse flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-spin" />
                   <span>{selectedAgent?.name} is analyzing query...</span>
                 </div>
               )}
             </div>
 
             {/* Input Bar */}
-            <form onSubmit={handleSendChat} className="p-4 border-t border-gray-200 bg-white flex gap-2">
+            <form onSubmit={handleSendChat} className="p-4 border-t border-[#23252d] bg-[#181a20] flex gap-2">
               <input
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder={`Send directive to ${selectedAgent?.name}...`}
                 disabled={isSendingChat}
-                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-300 text-xs font-mono text-black focus:border-black focus:outline-none"
+                className="flex-1 px-4 py-2.5 bg-[#131418] border border-[#282a36] text-xs font-mono text-gray-100 focus:border-blue-500 focus:outline-none rounded-lg placeholder:text-gray-600 transition-colors"
               />
 
               <button
                 type="submit"
                 disabled={isSendingChat || !chatInput.trim()}
-                className="px-6 py-2.5 bg-black text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-all shadow-md shadow-blue-500/20 disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Send</span>
