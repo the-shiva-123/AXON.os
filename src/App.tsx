@@ -1,56 +1,210 @@
-import React from 'react';
-import { ThemeProvider } from './components/ThemeProvider';
-import Header from './components/Header';
-import Hero3D from './components/Hero3D';
-import FeatureGrid from './components/FeatureGrid';
-import ProductCards from './components/ProductCards';
-import InteractiveShowcase from './components/InteractiveShowcase';
-import StatsSection from './components/StatsSection';
-import Footer from './components/Footer';
+import React, { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
+import { FooterBar } from './components/FooterBar';
+import { DraftsGeneratorView } from './components/DraftsGeneratorView';
+import { ArchitectureView } from './components/ArchitectureView';
+import { WorkflowCanvasView } from './components/WorkflowCanvasView';
+import { ExecutionsTerminalView } from './components/ExecutionsTerminalView';
+import { DeploymentsExportView } from './components/DeploymentsExportView';
+import { AgentDetailModal } from './components/AgentDetailModal';
+import { AgentCollective, AIAgent, CollectiveGenerationRequest } from './types/agent';
 
-export const AppContent: React.FC = () => {
-  const scrollToSection = (sectionId: string) => {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+export default function App() {
+  const [activeTab, setActiveTab] = useState<'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments'>('drafts');
+  const [collective, setCollective] = useState<AgentCollective | null>(null);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+
+  // Modal / Agent Edit state
+  const [selectedAgentForModal, setSelectedAgentForModal] = useState<AIAgent | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedAgentForChat, setSelectedAgentForChat] = useState<AIAgent | null>(null);
+
+  // Initialize with a default default collective on first load if none exists
+  useEffect(() => {
+    const saved = localStorage.getItem('axon_collective');
+    if (saved) {
+      try {
+        setCollective(JSON.parse(saved));
+      } catch (e) {
+        console.error('Error loading saved collective:', e);
+      }
+    }
+  }, []);
+
+  // Save collective to localStorage when changed
+  useEffect(() => {
+    if (collective) {
+      localStorage.setItem('axon_collective', JSON.stringify(collective));
+    }
+  }, [collective]);
+
+  // Handle generation call
+  const handleGenerateCollective = async (req: CollectiveGenerationRequest) => {
+    setIsGenerating(true);
+    try {
+      const res = await fetch('/api/generate-collective', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req),
+      });
+
+      const data: AgentCollective = await res.json();
+      setCollective(data);
+      // Auto transition to architecture tab to view generated cards
+      setActiveTab('architecture');
+    } catch (err) {
+      console.error('Failed to generate agent collective:', err);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
+  // Agent Management Handlers
+  const handleSelectAgentForEdit = (agent: AIAgent) => {
+    setSelectedAgentForModal(agent);
+    setIsModalOpen(true);
+  };
+
+  const handleAddCustomAgent = () => {
+    const nextNum = String((collective?.agents.length || 0) + 1).padStart(2, '0');
+    const newAgent: AIAgent = {
+      id: 'agent-' + Date.now(),
+      number: nextNum,
+      name: 'Custom Agent',
+      role: 'Specialist',
+      title: 'Autonomous Custom Operator',
+      description: 'Executes user-defined operational domain workflows.',
+      avatarIcon: 'Cpu',
+      categoryTags: ['Manual Override', 'Custom'],
+      systemPrompt: 'You are a specialized AI agent designed for domain execution.',
+      temperature: 0.3,
+      model: 'gemini-2.5-flash',
+      hierarchyLevel: 'Specialist',
+      tools: [
+        {
+          id: 'tool-custom-1',
+          name: 'Custom Web Search',
+          description: 'Queries live web context',
+          category: 'Search & Retrieval',
+        },
+      ],
+      inputSchema: '{"type": "object", "properties": {"prompt": {"type": "string"}}}',
+      outputSchema: '{"type": "object", "properties": {"result": {"type": "string"}}}',
+      memoryType: 'Short-term Context',
+      status: 'Idle',
+    };
+
+    setSelectedAgentForModal(newAgent);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveAgent = (updatedAgent: AIAgent) => {
+    if (!collective) {
+      // Create fresh collective if none existed
+      setCollective({
+        id: 'coll-' + Date.now(),
+        title: 'Custom Agent Collective',
+        missionOverview: 'Manually synthesized AI agent workforce.',
+        orchestrationPattern: 'Hierarchical Supervisor',
+        suggestedFirstTask: 'Run operational audit on domain workflow.',
+        domainFocus: 'Custom',
+        createdAt: new Date().toISOString(),
+        agents: [updatedAgent],
+      });
+      return;
+    }
+
+    const exists = collective.agents.some((a) => a.id === updatedAgent.id);
+    let updatedAgents: AIAgent[];
+
+    if (exists) {
+      updatedAgents = collective.agents.map((a) => (a.id === updatedAgent.id ? updatedAgent : a));
+    } else {
+      updatedAgents = [...collective.agents, updatedAgent];
+    }
+
+    setCollective({
+      ...collective,
+      agents: updatedAgents,
+    });
+  };
+
+  const handleDeleteAgent = (agentId: string) => {
+    if (!collective) return;
+    setCollective({
+      ...collective,
+      agents: collective.agents.filter((a) => a.id !== agentId),
+    });
+  };
+
+  const handleTestAgentChat = (agent: AIAgent) => {
+    setSelectedAgentForChat(agent);
+    setActiveTab('executions');
+  };
+
+  const handleRunCollectiveSimulation = () => {
+    setActiveTab('executions');
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-100 transition-colors duration-200">
-      {/* Navigation Header */}
-      <Header onScrollToSection={scrollToSection} />
+    <div className="h-screen w-full flex flex-col bg-[#0b0c0e] text-[#e3e3e8] overflow-hidden select-none font-sans">
+      {/* Top Geometric Navigation */}
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        agentCount={collective?.agents.length || 0}
+        onRunTerminalClick={() => setActiveTab('executions')}
+      />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full">
-        {/* 3D Hero Section */}
-        <Hero3D onExploreClick={() => scrollToSection('products')} />
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-12">
+        {activeTab === 'drafts' && (
+          <DraftsGeneratorView
+            onGenerate={handleGenerateCollective}
+            isGenerating={isGenerating}
+            currentCollective={collective}
+          />
+        )}
 
-        {/* Feature Pillars Grid */}
-        <FeatureGrid />
+        {activeTab === 'architecture' && (
+          <ArchitectureView
+            collective={collective}
+            onSelectAgent={handleSelectAgentForEdit}
+            onAddAgent={handleAddCustomAgent}
+            onDeleteAgent={handleDeleteAgent}
+            onTestAgentChat={handleTestAgentChat}
+            onRunCollective={handleRunCollectiveSimulation}
+          />
+        )}
 
-        {/* Product Ecosystem Cards */}
-        <ProductCards />
+        {activeTab === 'canvas' && (
+          <WorkflowCanvasView
+            collective={collective}
+            onUpdateCollective={(updated) => setCollective(updated)}
+            onRunSimulation={() => setActiveTab('executions')}
+          />
+        )}
 
-        {/* Interactive Lab Showcase */}
-        <InteractiveShowcase />
+        {activeTab === 'executions' && (
+          <ExecutionsTerminalView
+            collective={collective}
+            initialAgentForChat={selectedAgentForChat}
+          />
+        )}
 
-        {/* Performance Stats & Benchmarks */}
-        <StatsSection />
+        {activeTab === 'deployments' && <DeploymentsExportView collective={collective} />}
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Bottom Status Footer */}
+      <FooterBar />
+
+      {/* Agent Detail Modal */}
+      <AgentDetailModal
+        agent={selectedAgentForModal}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSaveAgent={handleSaveAgent}
+      />
     </div>
   );
-};
-
-export function App() {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
-  );
 }
-
-export default App;
