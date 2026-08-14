@@ -7,12 +7,15 @@ import { WorkflowCanvasView } from './components/WorkflowCanvasView';
 import { ExecutionsTerminalView } from './components/ExecutionsTerminalView';
 import { DeploymentsExportView } from './components/DeploymentsExportView';
 import { AgentDetailModal } from './components/AgentDetailModal';
+import { LandingOverlay } from './components/LandingOverlay';
 import { AgentCollective, AIAgent, CollectiveGenerationRequest } from './types/agent';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments'>('drafts');
   const [collective, setCollective] = useState<AgentCollective | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [showLanding, setShowLanding] = useState(true);
+  const [landingExiting, setLandingExiting] = useState(false);
 
   // Modal / Agent Edit state
   const [selectedAgentForModal, setSelectedAgentForModal] = useState<AIAgent | null>(null);
@@ -146,65 +149,78 @@ export default function App() {
     setActiveTab('executions');
   };
 
+  const handleGetStarted = () => {
+    setLandingExiting(true);
+    window.setTimeout(() => setShowLanding(false), 340);
+  };
+
   return (
-    <div className="h-screen w-full flex flex-col bg-[#0b0c0e] text-[#e3e3e8] overflow-hidden select-none font-sans">
-      {/* Top Geometric Navigation */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        agentCount={collective?.agents.length || 0}
-        onRunTerminalClick={() => setActiveTab('executions')}
-      />
+    <div className="app-shell">
+      {showLanding && (
+        <LandingOverlay isExiting={landingExiting} onGetStarted={handleGetStarted} />
+      )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-12">
-        {activeTab === 'drafts' && (
-          <DraftsGeneratorView
-            onGenerate={handleGenerateCollective}
-            isGenerating={isGenerating}
-            currentCollective={collective}
+      <div className={`app-content ${showLanding ? 'app-content--blurred' : ''}`}>
+        <div className="h-screen w-full flex flex-col bg-[#0b0c0e] text-[#e3e3e8] overflow-hidden select-none font-sans">
+          {/* Top Geometric Navigation */}
+          <Navbar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            agentCount={collective?.agents.length || 0}
+            onRunTerminalClick={() => setActiveTab('executions')}
           />
-        )}
 
-        {activeTab === 'architecture' && (
-          <ArchitectureView
-            collective={collective}
-            onSelectAgent={handleSelectAgentForEdit}
-            onAddAgent={handleAddCustomAgent}
-            onDeleteAgent={handleDeleteAgent}
-            onTestAgentChat={handleTestAgentChat}
-            onRunCollective={handleRunCollectiveSimulation}
+          {/* Main Content Area */}
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-12">
+            {activeTab === 'drafts' && (
+              <DraftsGeneratorView
+                onGenerate={handleGenerateCollective}
+                isGenerating={isGenerating}
+                currentCollective={collective}
+              />
+            )}
+
+            {activeTab === 'architecture' && (
+              <ArchitectureView
+                collective={collective}
+                onSelectAgent={handleSelectAgentForEdit}
+                onAddAgent={handleAddCustomAgent}
+                onDeleteAgent={handleDeleteAgent}
+                onTestAgentChat={handleTestAgentChat}
+                onRunCollective={handleRunCollectiveSimulation}
+              />
+            )}
+
+            {activeTab === 'canvas' && (
+              <WorkflowCanvasView
+                collective={collective}
+                onUpdateCollective={(updated) => setCollective(updated)}
+                onRunSimulation={() => setActiveTab('executions')}
+              />
+            )}
+
+            {activeTab === 'executions' && (
+              <ExecutionsTerminalView
+                collective={collective}
+                initialAgentForChat={selectedAgentForChat}
+              />
+            )}
+
+            {activeTab === 'deployments' && <DeploymentsExportView collective={collective} />}
+          </main>
+
+          {/* Bottom Status Footer */}
+          <FooterBar />
+
+          {/* Agent Detail Modal */}
+          <AgentDetailModal
+            agent={selectedAgentForModal}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSaveAgent={handleSaveAgent}
           />
-        )}
-
-        {activeTab === 'canvas' && (
-          <WorkflowCanvasView
-            collective={collective}
-            onUpdateCollective={(updated) => setCollective(updated)}
-            onRunSimulation={() => setActiveTab('executions')}
-          />
-        )}
-
-        {activeTab === 'executions' && (
-          <ExecutionsTerminalView
-            collective={collective}
-            initialAgentForChat={selectedAgentForChat}
-          />
-        )}
-
-        {activeTab === 'deployments' && <DeploymentsExportView collective={collective} />}
-      </main>
-
-      {/* Bottom Status Footer */}
-      <FooterBar />
-
-      {/* Agent Detail Modal */}
-      <AgentDetailModal
-        agent={selectedAgentForModal}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSaveAgent={handleSaveAgent}
-      />
+        </div>
+      </div>
     </div>
   );
 }
