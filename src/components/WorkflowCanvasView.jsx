@@ -1,12 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  WorkflowGraph,
-  WorkflowNode,
-  WorkflowEdge,
-  WorkflowNodeType,
-} from '../types/workflow';
-import { AgentCollective, AIAgent } from '../types/agent';
-import {
   buildGraphFromCollective,
   WORKFLOW_TEMPLATES,
 } from '../data/workflowTemplates';
@@ -36,63 +29,57 @@ import {
 } from 'lucide-react';
 import { FormattedMarkdown } from './FormattedMarkdown';
 
-interface WorkflowCanvasViewProps {
-  collective: AgentCollective | null;
-  onUpdateCollective: (updatedCollective: AgentCollective) => void;
-  onRunSimulation?: (taskGoal: string) => void;
-}
-
-export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
+export const WorkflowCanvasView = ({
   collective,
   onUpdateCollective,
   onRunSimulation,
 }) => {
   // Graph state initialized from collective or default template
-  const [graph, setGraph] = useState<WorkflowGraph>(() =>
+  const [graph, setGraph] = useState(() =>
     buildGraphFromCollective(collective)
   );
 
   // Sync graph if collective changes externally and graph is empty
   useEffect(() => {
-    if (collective && collective.agents.length > 0 && graph.nodes.length <= 4) {
+    if (collective && collective.agents && collective.agents.length > 0 && graph.nodes.length <= 4) {
       setGraph(buildGraphFromCollective(collective));
     }
   }, [collective]);
 
   // Canvas Viewport Pan & Zoom state
-  const [zoom, setZoom] = useState<number>(1);
-  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [isPanning, setIsPanning] = useState<boolean>(false);
-  const [panStart, setPanStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
 
   // Selected Node for Right Inspector
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState(null);
 
   // Node Dragging State
-  const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
-  const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [draggedNodeId, setDraggedNodeId] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // Wiring / Edge Creation state
-  const [connectingSourceId, setConnectingSourceId] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [connectingSourceId, setConnectingSourceId] = useState(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // Simulation state
-  const [isSimulating, setIsSimulating] = useState<boolean>(false);
-  const [activeExecutingNodeId, setActiveExecutingNodeId] = useState<string | null>(null);
-  const [executionLogs, setExecutionLogs] = useState<string[]>([]);
-  const [hasCompiledAlert, setHasCompiledAlert] = useState<boolean>(false);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [activeExecutingNodeId, setActiveExecutingNodeId] = useState(null);
+  const [executionLogs, setExecutionLogs] = useState([]);
+  const [hasCompiledAlert, setHasCompiledAlert] = useState(false);
 
   // Canvas Container Ref
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef(null);
 
   // Helper to handle window / mouse pan
-  const handleMouseDownCanvas = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.node-card')) return;
+  const handleMouseDownCanvas = (e) => {
+    if (e.target.closest('.node-card')) return;
     setIsPanning(true);
     setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
   };
 
-  const handleMouseMoveCanvas = (e: React.MouseEvent) => {
+  const handleMouseMoveCanvas = (e) => {
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       // Calculate mouse position relative to zoom canvas
@@ -131,7 +118,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Node Mouse Down for Dragging
-  const handleNodeMouseDown = (e: React.MouseEvent, nodeId: string) => {
+  const handleNodeMouseDown = (e, nodeId) => {
     e.stopPropagation();
     setSelectedNodeId(nodeId);
     setDraggedNodeId(nodeId);
@@ -146,13 +133,13 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Connection Port Wiring Logic
-  const handlePortMouseDown = (e: React.MouseEvent, nodeId: string, isOutput: boolean) => {
+  const handlePortMouseDown = (e, nodeId, isOutput) => {
     e.stopPropagation();
     if (isOutput) {
       setConnectingSourceId(nodeId);
     } else if (connectingSourceId && connectingSourceId !== nodeId) {
       // Connect source to target
-      const newEdge: WorkflowEdge = {
+      const newEdge = {
         id: `e-${connectingSourceId}-${nodeId}-${Date.now()}`,
         sourceNodeId: connectingSourceId,
         targetNodeId: nodeId,
@@ -171,7 +158,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Remove Edge
-  const handleDeleteEdge = (edgeId: string) => {
+  const handleDeleteEdge = (edgeId) => {
     setGraph((prev) => ({
       ...prev,
       edges: prev.edges.filter((e) => e.id !== edgeId),
@@ -179,10 +166,10 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Add New Node
-  const handleAddNode = (type: WorkflowNodeType) => {
+  const handleAddNode = (type) => {
     const id = `node-${type}-${Date.now()}`;
     let label = 'New Agent';
-    let data: any = { model: 'gemini-2.5-flash', temperature: 0.3 };
+    let data = { model: 'gemini-2.5-flash', temperature: 0.3 };
 
     if (type === 'agent') {
       label = `Specialist Agent #${graph.nodes.filter((n) => n.type === 'agent').length + 1}`;
@@ -218,7 +205,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
       };
     }
 
-    const newNode: WorkflowNode = {
+    const newNode = {
       id,
       type,
       label,
@@ -235,7 +222,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Delete Node
-  const handleDeleteNode = (nodeId: string) => {
+  const handleDeleteNode = (nodeId) => {
     setGraph((prev) => ({
       nodes: prev.nodes.filter((n) => n.id !== nodeId),
       edges: prev.edges.filter((e) => e.sourceNodeId !== nodeId && e.targetNodeId !== nodeId),
@@ -246,7 +233,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
   };
 
   // Update Node Data
-  const handleUpdateNode = (updatedNode: WorkflowNode) => {
+  const handleUpdateNode = (updatedNode) => {
     setGraph((prev) => ({
       ...prev,
       nodes: prev.nodes.map((n) => (n.id === updatedNode.id ? updatedNode : n)),
@@ -262,7 +249,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
       return;
     }
 
-    const compiledAgents: AIAgent[] = agentNodes.map((n, idx) => {
+    const compiledAgents = agentNodes.map((n, idx) => {
       const numStr = String(idx + 1).padStart(2, '0');
       // Find connected tools
       const connectedToolEdges = graph.edges.filter((e) => e.sourceNodeId === n.id);
@@ -275,7 +262,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
         id: `tool-${tn.id}`,
         name: tn.data.toolName || tn.label,
         description: tn.data.toolDescription || 'Custom workflow tool',
-        category: (tn.data.toolCategory as any) || 'Search & Retrieval',
+        category: tn.data.toolCategory || 'Search & Retrieval',
       }));
 
       return {
@@ -301,7 +288,7 @@ export const WorkflowCanvasView: React.FC<WorkflowCanvasViewProps> = ({
 
     const triggerNode = graph.nodes.find((n) => n.type === 'trigger');
 
-    const newCollective: AgentCollective = {
+    const newCollective = {
       id: collective?.id || `coll-visual-${Date.now()}`,
       title: collective?.title || 'Visual Workflow Collective',
       missionOverview: 'Agent workforce assembled via interactive Visual Workflow Canvas.',

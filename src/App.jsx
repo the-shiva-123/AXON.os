@@ -8,21 +8,20 @@ import { ExecutionsTerminalView } from './components/ExecutionsTerminalView';
 import { DeploymentsExportView } from './components/DeploymentsExportView';
 import { AgentDetailModal } from './components/AgentDetailModal';
 import { LandingOverlay } from './components/LandingOverlay';
-import { AgentCollective, AIAgent, CollectiveGenerationRequest } from './types/agent';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments'>('drafts');
-  const [collective, setCollective] = useState<AgentCollective | null>(null);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState('drafts');
+  const [collective, setCollective] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
   const [landingExiting, setLandingExiting] = useState(false);
 
   // Modal / Agent Edit state
-  const [selectedAgentForModal, setSelectedAgentForModal] = useState<AIAgent | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedAgentForChat, setSelectedAgentForChat] = useState<AIAgent | null>(null);
+  const [selectedAgentForModal, setSelectedAgentForModal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAgentForChat, setSelectedAgentForChat] = useState(null);
 
-  // Initialize with a default default collective on first load if none exists
+  // Initialize with a default collective on first load if none exists
   useEffect(() => {
     const saved = localStorage.getItem('axon_collective');
     if (saved) {
@@ -42,7 +41,7 @@ export default function App() {
   }, [collective]);
 
   // Handle generation call
-  const handleGenerateCollective = async (req: CollectiveGenerationRequest) => {
+  const handleGenerateCollective = async (req) => {
     setIsGenerating(true);
     try {
       const res = await fetch('/api/generate-collective', {
@@ -51,7 +50,7 @@ export default function App() {
         body: JSON.stringify(req),
       });
 
-      const data: AgentCollective = await res.json();
+      const data = await res.json();
       setCollective(data);
       // Auto transition to architecture tab to view generated cards
       setActiveTab('architecture');
@@ -63,14 +62,14 @@ export default function App() {
   };
 
   // Agent Management Handlers
-  const handleSelectAgentForEdit = (agent: AIAgent) => {
+  const handleSelectAgentForEdit = (agent) => {
     setSelectedAgentForModal(agent);
     setIsModalOpen(true);
   };
 
   const handleAddCustomAgent = () => {
-    const nextNum = String((collective?.agents.length || 0) + 1).padStart(2, '0');
-    const newAgent: AIAgent = {
+    const nextNum = String((collective?.agents?.length || 0) + 1).padStart(2, '0');
+    const newAgent = {
       id: 'agent-' + Date.now(),
       number: nextNum,
       name: 'Custom Agent',
@@ -101,7 +100,7 @@ export default function App() {
     setIsModalOpen(true);
   };
 
-  const handleSaveAgent = (updatedAgent: AIAgent) => {
+  const handleSaveAgent = (updatedAgent) => {
     if (!collective) {
       // Create fresh collective if none existed
       setCollective({
@@ -118,7 +117,7 @@ export default function App() {
     }
 
     const exists = collective.agents.some((a) => a.id === updatedAgent.id);
-    let updatedAgents: AIAgent[];
+    let updatedAgents;
 
     if (exists) {
       updatedAgents = collective.agents.map((a) => (a.id === updatedAgent.id ? updatedAgent : a));
@@ -132,7 +131,7 @@ export default function App() {
     });
   };
 
-  const handleDeleteAgent = (agentId: string) => {
+  const handleDeleteAgent = (agentId) => {
     if (!collective) return;
     setCollective({
       ...collective,
@@ -140,7 +139,7 @@ export default function App() {
     });
   };
 
-  const handleTestAgentChat = (agent: AIAgent) => {
+  const handleTestAgentChat = (agent) => {
     setSelectedAgentForChat(agent);
     setActiveTab('executions');
   };
@@ -166,7 +165,7 @@ export default function App() {
           <Navbar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            agentCount={collective?.agents.length || 0}
+            agentCount={collective?.agents?.length || 0}
             onRunTerminalClick={() => setActiveTab('executions')}
           />
 

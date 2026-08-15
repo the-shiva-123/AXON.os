@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Bot, Layers3, Sparkles } from 'lucide-react';
 
-type LandingOverlayProps = {
-  isExiting: boolean;
-  onGetStarted: () => void;
-};
-
 const quickActions = ['Build Web App', 'Analyze Code', 'Explore Canvas'];
 
 const featureCards = [
@@ -26,8 +21,8 @@ const featureCards = [
   },
 ];
 
-export function LandingOverlay({ isExiting, onGetStarted }: LandingOverlayProps) {
-  const overlayRef = useRef<HTMLDivElement | null>(null);
+export function LandingOverlay({ isExiting, onGetStarted }) {
+  const overlayRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {

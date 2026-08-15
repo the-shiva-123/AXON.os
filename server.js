@@ -5,7 +5,7 @@ import {
   generateAgentCollectiveService,
   chatWithAgentService,
   simulateCollectiveExecutionService,
-} from './src/server/geminiService';
+} from './src/server/geminiService.js';
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ app.post('/api/generate-collective', async (req, res) => {
   try {
     const result = await generateAgentCollectiveService(req.body);
     res.json(result);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error generating collective:', err);
     res.status(500).json({ error: err?.message || 'Failed to generate agents' });
   }
@@ -28,7 +28,7 @@ app.post('/api/agent-chat', async (req, res) => {
   try {
     const reply = await chatWithAgentService(req.body);
     res.json({ reply });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error in agent chat:', err);
     res.status(500).json({ error: err?.message || 'Agent chat error' });
   }
@@ -38,7 +38,7 @@ app.post('/api/simulate-collective', async (req, res) => {
   try {
     const steps = await simulateCollectiveExecutionService(req.body);
     res.json({ steps });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error simulating execution:', err);
     res.status(500).json({ error: err?.message || 'Simulation error' });
   }

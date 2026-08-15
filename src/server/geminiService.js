@@ -1,15 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
-import {
-  AgentCollective,
-  CollectiveGenerationRequest,
-  AgentChatRequest,
-  CollectiveSimulationStep,
-  SimulationRequest,
-  AIAgent,
-} from '../types/agent';
 
 // Lazy-initialize GoogleGenAI
-function getGenAI(): GoogleGenAI | null {
+function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
     return null;
@@ -18,7 +10,7 @@ function getGenAI(): GoogleGenAI | null {
 }
 
 // Robust JSON cleaner & parser for AI responses
-function parseCleanJson<T = any>(text: string): T {
+function parseCleanJson(text) {
   if (!text) {
     throw new Error('Empty text response from model');
   }
@@ -76,9 +68,7 @@ function parseCleanJson<T = any>(text: string): T {
   }
 }
 
-export async function generateAgentCollectiveService(
-  req: CollectiveGenerationRequest
-): Promise<AgentCollective> {
+export async function generateAgentCollectiveService(req) {
   const genAI = getGenAI();
   const agentCount = req.agentCount || 4;
   const orchestrationPattern = req.orchestrationStyle || 'Hierarchical Supervisor';
@@ -160,7 +150,7 @@ Ensure you generate EXACTLY ${agentCount} distinct, complementary AI agents with
       suggestedFirstTask: parsed.suggestedFirstTask || 'Execute initial workflow audit for ' + req.prompt,
       domainFocus: parsed.domainFocus || domainFocus,
       createdAt: new Date().toISOString(),
-      agents: (parsed.agents || []).map((ag: any, index: number) => ({
+      agents: (parsed.agents || []).map((ag, index) => ({
         id: ag.id || `agent-${index + 1}`,
         number: String(index + 1).padStart(2, '0'),
         name: ag.name || `Agent ${index + 1}`,
@@ -186,7 +176,7 @@ Ensure you generate EXACTLY ${agentCount} distinct, complementary AI agents with
   }
 }
 
-export async function chatWithAgentService(req: AgentChatRequest): Promise<string> {
+export async function chatWithAgentService(req) {
   const genAI = getGenAI();
   const { agent, messages } = req;
   const lastUserMsg = messages.filter((m) => m.role === 'user').pop()?.content || 'Hello';
@@ -232,7 +222,7 @@ Respond directly in character as ${agent.name}. Use clean, highly readable Markd
 
     const response = await genAI.models.generateContent({
       model: agent.model || 'gemini-2.5-flash',
-      contents: formattedContents as any,
+      contents: formattedContents,
       config: {
         systemInstruction,
         temperature: agent.temperature || 0.3,
@@ -240,7 +230,7 @@ Respond directly in character as ${agent.name}. Use clean, highly readable Markd
     });
 
     return response.text || `### **${agent.name}**\n\nTask processed successfully according to system instructions.`;
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error in agent chat:', err);
     const errStr = String(err?.message || err);
     const isRateLimit = err?.status === 429 || errStr.includes('429') || errStr.includes('RESOURCE_EXHAUSTED') || errStr.includes('quota');
@@ -279,9 +269,7 @@ System nominal and ready for your next command.`;
   }
 }
 
-export async function simulateCollectiveExecutionService(
-  req: SimulationRequest
-): Promise<CollectiveSimulationStep[]> {
+export async function simulateCollectiveExecutionService(req) {
   const genAI = getGenAI();
   const { collective, taskGoal } = req;
 
@@ -341,12 +329,7 @@ Return a JSON array of step objects with this structure:
 }
 
 // Procedural fallbacks when API key is unavailable or during network offline scenarios
-function createFallbackCollective(
-  prompt: string,
-  count: number,
-  orchestration: any,
-  domain: string
-): AgentCollective {
+function createFallbackCollective(prompt, count, orchestration, domain) {
   const keywords = prompt.toLowerCase();
   let topic = 'Enterprise Automation';
   if (keywords.includes('saas') || keywords.includes('code') || keywords.includes('app')) topic = 'SaaS Software Engineering';
@@ -354,7 +337,7 @@ function createFallbackCollective(
   if (keywords.includes('security') || keywords.includes('cyber') || keywords.includes('incident')) topic = 'Cybersecurity & SecOps';
   if (keywords.includes('marketing') || keywords.includes('content') || keywords.includes('brand')) topic = 'Generative Content & Branding';
 
-  const baseAgents: AIAgent[] = [
+  const baseAgents = [
     {
       id: 'agent-1',
       number: '01',
@@ -454,7 +437,7 @@ function createFallbackCollective(
   };
 }
 
-function createFallbackSimulation(collective: AgentCollective, goal: string): CollectiveSimulationStep[] {
+function createFallbackSimulation(collective, goal) {
   const leader = collective.agents.find((a) => a.hierarchyLevel === 'Lead / Supervisor') || collective.agents[0];
   const specialist = collective.agents.find((a) => a.id !== leader.id) || collective.agents[1] || leader;
   const reviewer = collective.agents.find((a) => a.hierarchyLevel === 'Auditor / Reviewer') || collective.agents[collective.agents.length - 1];

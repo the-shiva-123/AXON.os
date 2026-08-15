@@ -1,6 +1,4 @@
-import { MissionPreset } from '../types/agent';
-
-export const MISSION_PRESETS: MissionPreset[] = [
+export const MISSION_PRESETS = [
   {
     id: 'startup-launch',
     title: 'Autonomous SaaS Launch Team',

@@ -1,12 +1,7 @@
 import React from 'react';
 import Markdown from 'react-markdown';
 
-interface FormattedMarkdownProps {
-  content: string;
-  isUser?: boolean;
-}
-
-export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, isUser = false }) => {
+export const FormattedMarkdown = ({ content, isUser = false }) => {
   if (isUser) {
     return <div className="whitespace-pre-wrap leading-relaxed font-sans text-xs">{content}</div>;
   }
@@ -56,7 +51,7 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, i
           em: ({ children }) => (
             <em className="italic text-gray-700">{children}</em>
           ),
-          code: ({ className, children, ...props }: any) => {
+          code: ({ className, children, ...props }) => {
             const isInline = !className && typeof children === 'string' && !children.includes('\n');
             if (isInline) {
               return (

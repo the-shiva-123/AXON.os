@@ -1,10 +1,7 @@
-import { AgentCollective, AIAgent } from '../types/agent';
-import { WorkflowGraph, WorkflowNode, WorkflowEdge, WorkflowTemplate } from '../types/workflow';
-
 /**
  * Converts an AgentCollective into an interactive WorkflowGraph with smart coordinates and connections
  */
-export function buildGraphFromCollective(collective: AgentCollective | null): WorkflowGraph {
+export function buildGraphFromCollective(collective) {
   if (!collective || !collective.agents || collective.agents.length === 0) {
     // Default starter graph
     return {
@@ -66,8 +63,8 @@ export function buildGraphFromCollective(collective: AgentCollective | null): Wo
     };
   }
 
-  const nodes: WorkflowNode[] = [];
-  const edges: WorkflowEdge[] = [];
+  const nodes = [];
+  const edges = [];
 
   // Add Trigger Node at start
   const triggerNodeId = 'trigger-root';
@@ -96,7 +93,7 @@ export function buildGraphFromCollective(collective: AgentCollective | null): Wo
   const colWidth = 320;
   const startX = 400;
 
-  let supervisorNodeId: string | null = null;
+  let supervisorNodeId = null;
   let toolNodeCounter = 1;
 
   orderedAgents.forEach((agent, index) => {
@@ -203,7 +200,7 @@ export function buildGraphFromCollective(collective: AgentCollective | null): Wo
   return { nodes, edges };
 }
 
-export const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
+export const WORKFLOW_TEMPLATES = [
   {
     id: 'tmpl-research',
     name: 'Autonomous Market Research Engine',

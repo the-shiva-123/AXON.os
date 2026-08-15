@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 import { X, Save, Plus, Trash2, Sliders, Cpu, Wrench } from 'lucide-react';
-import { AIAgent, AgentTool } from '../types/agent';
 
-interface AgentDetailModalProps {
-  agent: AIAgent | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onSaveAgent: (updatedAgent: AIAgent) => void;
-}
-
-export const AgentDetailModal: React.FC<AgentDetailModalProps> = ({
+export const AgentDetailModal = ({
   agent,
   isOpen,
   onClose,
@@ -17,14 +9,14 @@ export const AgentDetailModal: React.FC<AgentDetailModalProps> = ({
 }) => {
   if (!isOpen || !agent) return null;
 
-  const [formData, setFormData] = useState<AIAgent>({ ...agent });
+  const [formData, setFormData] = useState({ ...agent });
   const [newToolName, setNewToolName] = useState('');
   const [newToolDesc, setNewToolDesc] = useState('');
-  const [newToolCategory, setNewToolCategory] = useState<AgentTool['category']>('API Integration');
+  const [newToolCategory, setNewToolCategory] = useState('API Integration');
 
   const handleAddTool = () => {
     if (!newToolName.trim()) return;
-    const tool: AgentTool = {
+    const tool = {
       id: 'tool-' + Date.now(),
       name: newToolName.trim(),
       description: newToolDesc.trim() || 'Custom agent capability',
@@ -38,14 +30,14 @@ export const AgentDetailModal: React.FC<AgentDetailModalProps> = ({
     setNewToolDesc('');
   };
 
-  const handleRemoveTool = (toolId: string) => {
+  const handleRemoveTool = (toolId) => {
     setFormData({
       ...formData,
       tools: (formData.tools || []).filter((t) => t.id !== toolId),
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onSaveAgent(formData);
     onClose();
@@ -117,7 +109,7 @@ export const AgentDetailModal: React.FC<AgentDetailModalProps> = ({
               </label>
               <select
                 value={formData.hierarchyLevel}
-                onChange={(e) => setFormData({ ...formData, hierarchyLevel: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, hierarchyLevel: e.target.value })}
                 className="p-2.5 bg-[#181a20] border border-[#282a36] text-xs font-medium text-white focus:border-blue-500 focus:outline-none rounded-lg transition-colors"
               >
                 <option value="Lead / Supervisor">Lead / Supervisor</option>

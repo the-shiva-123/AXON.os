@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { Sparkles, ArrowRight, Sliders, CheckCircle2, RotateCcw, Zap } from 'lucide-react';
 import { MISSION_PRESETS } from '../data/presets';
-import { CollectiveGenerationRequest, AgentCollective } from '../types/agent';
 
-interface DraftsGeneratorViewProps {
-  onGenerate: (req: CollectiveGenerationRequest) => Promise<void>;
-  isGenerating: boolean;
-  currentCollective: AgentCollective | null;
-  onSelectPresetPrompt?: (prompt: string, count: number) => void;
-}
-
-export const DraftsGeneratorView: React.FC<DraftsGeneratorViewProps> = ({
+export const DraftsGeneratorView = ({
   onGenerate,
   isGenerating,
   currentCollective,
@@ -18,23 +10,21 @@ export const DraftsGeneratorView: React.FC<DraftsGeneratorViewProps> = ({
   const [prompt, setPrompt] = useState(
     'Build a 4-agent autonomous startup workforce to launch an AI document analysis SaaS: 1 Lead Product Architect, 1 Full-Stack Backend Engineer, 1 Growth Marketing Specialist, and 1 QA/Security Compliance Auditor.'
   );
-  const [agentCount, setAgentCount] = useState<number>(4);
-  const [orchestrationStyle, setOrchestrationStyle] = useState<
-    'Hierarchical Supervisor' | 'Sequential Pipeline' | 'Peer Consensus' | 'Event-Driven Mesh'
-  >('Hierarchical Supervisor');
+  const [agentCount, setAgentCount] = useState(4);
+  const [orchestrationStyle, setOrchestrationStyle] = useState('Hierarchical Supervisor');
   const [domainFocus, setDomainFocus] = useState('Enterprise Automation & SaaS');
-  const [temperature, setTemperature] = useState<number>(0.3);
+  const [temperature, setTemperature] = useState(0.3);
   const [showParameters, setShowParameters] = useState(false);
-  const [generationStep, setGenerationStep] = useState<number>(0);
+  const [generationStep, setGenerationStep] = useState(0);
 
   const tokenCount = Math.min(1000, Math.floor(prompt.length * 1.3));
 
-  const handlePresetClick = (presetPrompt: string, count: number) => {
+  const handlePresetClick = (presetPrompt, count) => {
     setPrompt(presetPrompt);
     setAgentCount(count);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!prompt.trim() || isGenerating) return;
 
@@ -169,7 +159,7 @@ export const DraftsGeneratorView: React.FC<DraftsGeneratorViewProps> = ({
               </label>
               <select
                 value={orchestrationStyle}
-                onChange={(e) => setOrchestrationStyle(e.target.value as any)}
+                onChange={(e) => setOrchestrationStyle(e.target.value)}
                 className="w-full py-1.5 px-3 border border-[#282a36] bg-[#1b1c23] text-xs font-medium text-gray-200 rounded focus:border-blue-500 focus:outline-none"
               >
                 <option value="Hierarchical Supervisor">Hierarchical Supervisor</option>
@@ -328,7 +318,7 @@ export const DraftsGeneratorView: React.FC<DraftsGeneratorViewProps> = ({
 
           <div className="flex items-center gap-3 w-full md:w-auto justify-end">
             <button
-              onClick={() => handleSubmit({ preventDefault: () => {} } as any)}
+              onClick={() => handleSubmit({ preventDefault: () => {} })}
               className="px-4 py-2 border border-[#2b2d38] bg-[#1a1c24] hover:border-blue-500/40 text-gray-200 text-xs font-semibold rounded-lg hover:text-white transition-all flex items-center gap-1.5"
             >
               <RotateCcw className="w-3.5 h-3.5 text-blue-400" />

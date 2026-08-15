@@ -1,14 +1,7 @@
 import React from 'react';
 import { Terminal, Cpu, Layers, Play, Code2, Sparkles, GitFork } from 'lucide-react';
 
-interface NavbarProps {
-  activeTab: 'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments';
-  setActiveTab: (tab: 'drafts' | 'architecture' | 'canvas' | 'executions' | 'deployments') => void;
-  agentCount: number;
-  onRunTerminalClick?: () => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({
+export const Navbar = ({
   activeTab,
   setActiveTab,
   agentCount,
@@ -130,4 +123,3 @@ export const Navbar: React.FC<NavbarProps> = ({
     </nav>
   );
 };
-

@@ -13,45 +13,37 @@ import {
   Layers,
   ChevronRight,
 } from 'lucide-react';
-import { AgentCollective, AIAgent, CollectiveSimulationStep } from '../types/agent';
 import { FormattedMarkdown } from './FormattedMarkdown';
 
-interface ExecutionsTerminalViewProps {
-  collective: AgentCollective | null;
-  initialAgentForChat?: AIAgent | null;
-}
-
-export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
+export const ExecutionsTerminalView = ({
   collective,
   initialAgentForChat,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'simulation' | 'directChat'>('simulation');
+  const [activeSubTab, setActiveSubTab] = useState('simulation');
 
   // Simulation state
-  const [taskGoal, setTaskGoal] = useState<string>(
+  const [taskGoal, setTaskGoal] = useState(
     collective?.suggestedFirstTask || 'Execute initial workflow audit and generate operational blueprint.'
   );
-  const [simulationSteps, setSimulationSteps] = useState<CollectiveSimulationStep[]>([]);
-  const [isSimulating, setIsSimulating] = useState<boolean>(false);
-  const [copiedStepIndex, setCopiedStepIndex] = useState<number | null>(null);
+  const [simulationSteps, setSimulationSteps] = useState([]);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [copiedStepIndex, setCopiedStepIndex] = useState(null);
 
   // Direct Agent Chat state
-  const [selectedAgentId, setSelectedAgentId] = useState<string>(
-    initialAgentForChat?.id || collective?.agents[0]?.id || ''
+  const [selectedAgentId, setSelectedAgentId] = useState(
+    initialAgentForChat?.id || collective?.agents?.[0]?.id || ''
   );
-  const [chatMessages, setChatMessages] = useState<
-    { role: 'user' | 'assistant'; content: string; timestamp: string }[]
-  >([
+  const [chatMessages, setChatMessages] = useState([
     {
       role: 'assistant',
       content: 'AXON Agent Playground active. Select an agent to test direct system prompt responses.',
       timestamp: new Date().toLocaleTimeString(),
     },
   ]);
-  const [chatInput, setChatInput] = useState<string>('');
-  const [isSendingChat, setIsSendingChat] = useState<boolean>(false);
+  const [chatInput, setChatInput] = useState('');
+  const [isSendingChat, setIsSendingChat] = useState(false);
 
-  const selectedAgent = collective?.agents.find((a) => a.id === selectedAgentId) || collective?.agents[0];
+  const selectedAgent = collective?.agents?.find((a) => a.id === selectedAgentId) || collective?.agents?.[0];
 
   // Run multi-agent simulation
   const handleRunSimulation = async () => {
@@ -86,7 +78,7 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
   };
 
   // Direct agent chat
-  const handleSendChat = async (e: React.FormEvent) => {
+  const handleSendChat = async (e) => {
     e.preventDefault();
     if (!chatInput.trim() || !selectedAgent || isSendingChat) return;
 
@@ -95,7 +87,7 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
 
     const newMsgs = [
       ...chatMessages,
-      { role: 'user' as const, content: userText, timestamp: new Date().toLocaleTimeString() },
+      { role: 'user', content: userText, timestamp: new Date().toLocaleTimeString() },
     ];
     setChatMessages(newMsgs);
     setIsSendingChat(true);
@@ -133,7 +125,7 @@ export const ExecutionsTerminalView: React.FC<ExecutionsTerminalViewProps> = ({
     }
   };
 
-  const copyToClipboard = (text: string, index: number) => {
+  const copyToClipboard = (text, index) => {
     navigator.clipboard.writeText(text);
     setCopiedStepIndex(index);
     setTimeout(() => setCopiedStepIndex(null), 2000);

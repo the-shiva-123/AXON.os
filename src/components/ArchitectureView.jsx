@@ -16,18 +16,8 @@ import {
   Sparkles,
   Info,
 } from 'lucide-react';
-import { AgentCollective, AIAgent } from '../types/agent';
 
-interface ArchitectureViewProps {
-  collective: AgentCollective | null;
-  onSelectAgent: (agent: AIAgent) => void;
-  onAddAgent: () => void;
-  onDeleteAgent: (agentId: string) => void;
-  onTestAgentChat: (agent: AIAgent) => void;
-  onRunCollective: () => void;
-}
-
-const iconMap: Record<string, React.FC<{ className?: string }>> = {
+const iconMap = {
   Cpu,
   Shield,
   Brain,
@@ -38,7 +28,7 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   Sparkles,
 };
 
-export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
+export const ArchitectureView = ({
   collective,
   onSelectAgent,
   onAddAgent,
@@ -46,7 +36,7 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
   onTestAgentChat,
   onRunCollective,
 }) => {
-  const [filterTag, setFilterTag] = useState<string>('ALL');
+  const [filterTag, setFilterTag] = useState('ALL');
 
   if (!collective || !collective.agents || collective.agents.length === 0) {
     return (
@@ -150,7 +140,7 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({
         </div>
       )}
 
-      {/* Agent Cards Grid matching Geometric Balance structure */}
+      {/* Agent Cards Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredAgents.map((agent) => {
           const IconComponent = iconMap[agent.avatarIcon] || Cpu;

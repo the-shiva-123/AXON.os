@@ -1,14 +1,14 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { defineConfig, Plugin } from 'vite';
+import { defineConfig } from 'vite';
 import {
   generateAgentCollectiveService,
   chatWithAgentService,
   simulateCollectiveExecutionService,
-} from './src/server/geminiService';
+} from './src/server/geminiService.js';
 
-function apiPlugin(): Plugin {
+function apiPlugin() {
   return {
     name: 'axon-api-plugin',
     configureServer(server) {
@@ -52,7 +52,7 @@ function apiPlugin(): Plugin {
 
               res.statusCode = 404;
               res.end(JSON.stringify({ error: 'Endpoint not found' }));
-            } catch (err: any) {
+            } catch (err) {
               console.error('API plugin error:', err);
               res.statusCode = 500;
               res.setHeader('Content-Type', 'application/json');

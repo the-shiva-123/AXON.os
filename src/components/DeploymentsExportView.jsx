@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import { Code2, Copy, Check, Download, Terminal, Layers, FileCode } from 'lucide-react';
-import { AgentCollective } from '../types/agent';
 
-interface DeploymentsExportViewProps {
-  collective: AgentCollective | null;
-}
-
-export const DeploymentsExportView: React.FC<DeploymentsExportViewProps> = ({ collective }) => {
-  const [exportFormat, setExportFormat] = useState<
-    'crewai' | 'langchain' | 'genai-ts' | 'json' | 'yaml'
-  >('crewai');
+export const DeploymentsExportView = ({ collective }) => {
+  const [exportFormat, setExportFormat] = useState('crewai');
   const [copied, setCopied] = useState(false);
 
   if (!collective || collective.agents.length === 0) {
@@ -24,7 +17,7 @@ export const DeploymentsExportView: React.FC<DeploymentsExportViewProps> = ({ co
     );
   }
 
-  const generateCode = (): string => {
+  const generateCode = () => {
     if (exportFormat === 'crewai') {
       return generateCrewAICode(collective);
     } else if (exportFormat === 'langchain') {
@@ -48,7 +41,7 @@ export const DeploymentsExportView: React.FC<DeploymentsExportViewProps> = ({ co
   };
 
   const handleDownload = () => {
-    const extensions: Record<string, string> = {
+    const extensions = {
       crewai: 'py',
       langchain: 'py',
       'genai-ts': 'ts',
@@ -180,7 +173,7 @@ export const DeploymentsExportView: React.FC<DeploymentsExportViewProps> = ({ co
 };
 
 // Helper code generators
-function generateCrewAICode(c: AgentCollective): string {
+function generateCrewAICode(c) {
   const agentDefs = c.agents
     .map(
       (a) => `
@@ -225,7 +218,7 @@ if __name__ == "__main__":
 `;
 }
 
-function generateLangChainCode(c: AgentCollective): string {
+function generateLangChainCode(c) {
   return `import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, END
@@ -251,14 +244,14 @@ print(f"Loaded {len(agents_config)} AXON agents for LangChain graph initializati
 `;
 }
 
-function generateGenAITsCode(c: AgentCollective): string {
+function generateGenAITsCode(c) {
   return `import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 export const collectiveConfig = ${JSON.stringify(c, null, 2)};
 
-export async function runAgentStep(agentId: string, inputPrompt: string) {
+export async function runAgentStep(agentId, inputPrompt) {
   const agent = collectiveConfig.agents.find(a => a.id === agentId);
   if (!agent) throw new Error(\`Agent \${agentId} not found\`);
 
@@ -276,7 +269,7 @@ export async function runAgentStep(agentId: string, inputPrompt: string) {
 `;
 }
 
-function generateYAMLCode(c: AgentCollective): string {
+function generateYAMLCode(c) {
   return `title: "${c.title}"
 missionOverview: "${c.missionOverview}"
 orchestrationPattern: "${c.orchestrationPattern}"
