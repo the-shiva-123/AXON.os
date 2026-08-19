@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, Bot, Layers3, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Bot, Braces, GitFork, Layers3, Sparkles } from 'lucide-react';
 
 const quickActions = ['Build Web App', 'Analyze Code', 'Explore Canvas'];
 
@@ -54,24 +54,44 @@ export function LandingOverlay({ isExiting, onGetStarted }) {
   return (
     <div ref={overlayRef} className={`studio-landing-overlay ${isExiting ? 'studio-landing-overlay--exiting' : ''}`}>
       <div className="studio-landing-shell">
-        <header className={`studio-navbar ${isScrolled ? 'studio-navbar--scrolled' : ''}`} aria-label="Main navigation">
-          <div className="studio-brand" role="img" aria-label="Studio Showcase brand mark">
+        <header className={`studio-navbar ${isScrolled ? 'studio-navbar--scrolled' : ''}`} aria-label="AXON navigation">
+          <a className="studio-brand" href="#overview" aria-label="AXON home">
             <div className="studio-logo-wrap">
               <span className="studio-logo-core" />
               <span className="studio-logo-ring" />
             </div>
-            <span className="studio-brand-name">Studio Showcase</span>
-          </div>
+            <span className="studio-brand-lockup">
+              <span className="studio-brand-name">AXON<span>.OS</span></span>
+              <span className="studio-brand-meta">Agent operations studio</span>
+            </span>
+          </a>
 
           <nav className="studio-nav-links" aria-label="Primary navigation">
-            <a href="#overview">Overview</a>
-            <a href="#features">Features</a>
-            <a href="#docs">Docs</a>
+            <a href="#overview" className="studio-nav-link studio-nav-link--active">
+              <span className="studio-nav-index">01</span>
+              <span>Synthesize</span>
+            </a>
+            <a href="#features" className="studio-nav-link">
+              <GitFork size={14} strokeWidth={2.2} />
+              <span>Compose</span>
+            </a>
+            <a href="#features" className="studio-nav-link">
+              <Layers3 size={14} strokeWidth={2.2} />
+              <span>Validate</span>
+            </a>
+            <a href="#docs" className="studio-nav-link">
+              <Braces size={14} strokeWidth={2.2} />
+              <span>Deploy</span>
+            </a>
           </nav>
 
-          <button type="button" className="studio-primary-button" onClick={onGetStarted}>
-            Get Started
-          </button>
+          <div className="studio-nav-actions">
+            <span className="studio-nav-status"><span /> System ready</span>
+            <button type="button" className="studio-primary-button" onClick={onGetStarted}>
+              <span>Open studio</span>
+              <ArrowRight size={15} strokeWidth={2.4} />
+            </button>
+          </div>
         </header>
 
         <main className="studio-landing-body">
